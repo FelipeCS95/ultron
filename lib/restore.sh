@@ -20,10 +20,5 @@ ultron::restore() {
 
   echo 'Configs restauradas!'
 
-  local wong_setup="$PROJECTS_PATH/wong/setup.sh"
-  if [[ -f "$wong_setup" ]]; then
-    echo ''
-    echo 'Restaurando configs pessoais (Wong)...'
-    bash "$wong_setup"
-  fi
+  ultron::restore_personal
 }

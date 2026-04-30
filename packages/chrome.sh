@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PACKAGE_INFO=(google-chrome-stable)
+PACKAGE_INFO=(google-chrome-stable)  # pkg_name seria "chrome"
 
 install() {
   wget -qO- https://dl.google.com/linux/linux_signing_key.pub \

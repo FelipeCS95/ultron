@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PACKAGE_INFO=(docker-compose-plugin)
+PACKAGE_INFO=(docker-compose-plugin)  # pkg_name seria "docker_compose"
 REQUIRED_PACKAGES=(docker)
 
 install() {

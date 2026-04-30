@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PACKAGE_INFO=(brave-browser)
+PACKAGE_INFO=(brave-browser)  # pkg_name seria "brave", mas dpkg tem "brave-browser"
 REQUIRED_PACKAGES=(apt_transport_https)
 
 install() {

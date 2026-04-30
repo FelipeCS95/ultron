@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PACKAGE_INFO=(code)
+PACKAGE_INFO=(code)  # pkg_name seria "vscode"
 REQUIRED_PACKAGES=(apt_transport_https)
 
 install() {

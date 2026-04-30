@@ -1,11 +1,16 @@
 #!/bin/bash
 
-REQUIRED_PACKAGES=(apt_transport_https ca_certificates curl)
+# Instala o binário diretamente da release estável oficial.
+# Vantagem: sem versão hardcoded na URL, sem repo apt pra manter.
+
+PACKAGE_INFO=(/usr/local/bin/kubectl)
+PACKAGE_KIND=file
+REQUIRED_PACKAGES=(curl)
 
 install() {
-  curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.31/deb/Release.key \
-    | sudo gpg --dearmor -o /usr/share/keyrings/kubernetes-apt-keyring.gpg
-  echo "deb [signed-by=/usr/share/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.31/deb/ /" \
-    | sudo tee /etc/apt/sources.list.d/kubernetes.list
-  sudo apt-get update && sudo apt-get install -y kubectl
+  local version
+  version=$(curl -fsSL https://dl.k8s.io/release/stable.txt)
+  curl -fsSL "https://dl.k8s.io/release/${version}/bin/linux/amd64/kubectl" -o /tmp/kubectl
+  sudo install -o root -g root -m 0755 /tmp/kubectl /usr/local/bin/kubectl
+  rm /tmp/kubectl
 }

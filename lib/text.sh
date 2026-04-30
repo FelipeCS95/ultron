@@ -11,3 +11,7 @@ ultron::lowercase() {
 ultron::normalize_project_name() {
   ultron::lowercase "$1" | sed 's/[^a-zA-Z0-9]/_/g'
 }
+
+_pkg_normalize() {
+  ultron::lowercase "$1" | sed 's/-/_/g'
+}

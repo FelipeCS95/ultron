@@ -16,7 +16,7 @@ main.sh              Entrypoint: define PROJECTS_PATH e ULTRON_PATH, sourcia lib
 install.sh           Bootstrap standalone (curl-pipeable para máquina nova)
 lib/
   ultron.sh          Define ultron() e alias u=. Guard _ULTRON_INIT evita recursão no subshell.
-  check.sh           ultron::check_file, check_directory, check_installed, check_function
+  check.sh           ultron::check_file, check_directory, check_installed, check_function; _pkg_is_installed
   install.sh         ultron::install — tenta packages/*.sh, depois config/apt.sh, depois config/snap.sh
   remove.sh          ultron::remove
   config.sh          ultron::config — executa config() do package file
@@ -24,8 +24,8 @@ lib/
   restore.sh         ultron::restore — lê config/restore.sh, instala, chama ultron::restore_personal
   wong.sh            ultron::backup e ultron::restore_personal — toda lógica de backup/restore pessoal
   execution.sh       ultron::execute_function — despacha comandos, busca em projects/ pelo diretório atual
-  io.sh              ultron::print_title, ultron::logo_title, ultron::change_theme
-  text.sh            ultron::uppercase, ultron::lowercase, ultron::normalize_project_name
+  io.sh              ultron::print_title, ultron::print_separator, ultron::logo_title, ultron::change_theme
+  text.sh            ultron::uppercase, ultron::lowercase, ultron::normalize_project_name; _pkg_normalize
   system.sh          ultron::kill_sessions, ultron::change_files_owner
   project.sh         ultron::up/down/console/clear/coverage/bisect (wrappers Docker para qualquer projeto)
 projects/
@@ -40,7 +40,7 @@ config/
   restore.sh         RESTORE_PACKAGES + RESTORE_CONFIGS — EDITAR AQUI antes de rodar install.sh
   helpers.sh         Completions do shell (_ultron_completion)
   completions.sh     ULTRON_COMPLETIONS — args com tab completion por comando
-  env.sh             PROJECT_SYSTEM_PATH, UID, GID
+  env.sh             PROJECT_SYSTEM_PATH (auto-detectado: WSL vs Linux nativo), UID, GID
 ```
 
 ---
@@ -60,7 +60,9 @@ remove()  { ... }  # opcional
 config()  { ... }  # opcional — chamado por u config <pkg>
 ```
 
-O instalador verifica se já está instalado antes de rodar. PACKAGE_INFO resolve o "como checar" para casos não-dpkg (ex: `~/.oh-my-zsh` com `PACKAGE_KIND=directory`).
+O instalador verifica se já está instalado antes de rodar via `_pkg_is_installed` (em `lib/check.sh`), que lê `PACKAGE_KIND` e `PACKAGE_INFO` do subshell. Aceita parâmetro `any` para o modo de remoção (`check_any_installed`) vs o padrão `all` para instalação (`check_all_installed`). PACKAGE_INFO resolve o "como checar" para casos não-dpkg (ex: `~/.oh-my-zsh` com `PACKAGE_KIND=directory`).
+
+`ultron::check_installed` tenta `dpkg` primeiro, depois `command -v` — detecta binários instalados via asdf, kubectl manual, etc.
 
 ---
 
@@ -81,6 +83,9 @@ O instalador verifica se já está instalado antes de rodar. PACKAGE_INFO resolv
 - **`_ULTRON_INIT` guard** em `lib/ultron.sh` — impede `u kill_sessions` de rodar infinitamente quando lib/*.sh são sourciados no subshell.
 - **`if [[ "$project_name" != "ultron" ]]`** em `execution.sh` — impede reimportar lib/ultron.sh quando o diretório atual se chama "ultron".
 - **Funções simples em package files** — `install()`, `remove()`, `config()` sem namespace. Rodam em subshell isolado, sem conflito.
+- **`_pkg_is_installed` em `lib/check.sh`** — lê `PACKAGE_KIND`/`PACKAGE_INFO` do contexto do subshell (já setados via `source "$pkg_file"`). Não recebe o arquivo como parâmetro; depende do estado do subshell.
+- **`_pkg_normalize` em `lib/text.sh`** — converte nome de pacote para nome de arquivo (`-` → `_`, lowercase). Usada em install, remove e config.
+- **`ultron::print_separator`** para linha cheia de `#`; **`ultron::print_title "TEXTO"`** para linha com título. Não chamar `print_title` sem argumento.
 - **config/restore.sh é o arquivo de configuração do usuário** — deve ter todas as opções comentadas para o usuário escolher antes de rodar install.sh.
 
 ---

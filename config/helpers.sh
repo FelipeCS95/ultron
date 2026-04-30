@@ -1,7 +1,7 @@
 #!/bin/bash
 
 _ultron_commands() {
-  grep -rhoP 'ultron::\K\w+' "$ULTRON_PATH"/lib/*.sh | sort -u
+  grep -rho 'ultron::[a-zA-Z0-9_]*' "$ULTRON_PATH"/lib/*.sh | sed 's/.*ultron:://' | sort -u
 }
 
 _ultron_projects() {

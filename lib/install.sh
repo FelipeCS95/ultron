@@ -33,7 +33,7 @@ ultron::install() {
   [[ -z "$pkg" ]] && return 1
 
   local pkg_name
-  pkg_name=$(ultron::lowercase "$pkg" | sed 's/-/_/g')
+  pkg_name=$(_pkg_normalize "$pkg")
   local pkg_file="$ULTRON_PATH/packages/${pkg_name}.sh"
 
   # 1. Arquivo dedicado com lógica própria
@@ -49,15 +49,8 @@ ultron::install() {
         ultron::install "$dep"
       done
 
-      local is_installed=false
-      case "$PACKAGE_KIND" in
-        file)      ultron::check_file "${PACKAGE_INFO[*]}"          && is_installed=true ;;
-        directory) ultron::check_directory "${PACKAGE_INFO[*]}"     && is_installed=true ;;
-        *)         ultron::check_all_installed "${PACKAGE_INFO[@]}"  && is_installed=true ;;
-      esac
-
       ultron::print_title "INSTALL $(ultron::uppercase "$pkg")"
-      $is_installed && echo "$pkg already installed" || install
+      _pkg_is_installed && echo "$pkg already installed" || install  # alternativa ao if/then/else; ok pois echo raramente falha
     )
     return
   fi
@@ -68,7 +61,7 @@ ultron::install() {
     ultron::print_title "INSTALL $(ultron::uppercase "$pkg")"
     ultron::check_installed "$apt_name" \
       && echo "$pkg already installed" \
-      || sudo apt-get install -y "$apt_name"
+      || sudo apt-get install -y "$apt_name"  # alternativa ao if/then/else; ok pois echo raramente falha
     return
   fi
 

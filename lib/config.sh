@@ -5,7 +5,7 @@ ultron::config() {
   [[ -z "$pkg" ]] && return 1
 
   local pkg_name
-  pkg_name=$(ultron::lowercase "$pkg" | sed 's/-/_/g')
+  pkg_name=$(_pkg_normalize "$pkg")
   local pkg_file="$ULTRON_PATH/packages/${pkg_name}.sh"
 
   if [[ ! -f "$pkg_file" ]]; then

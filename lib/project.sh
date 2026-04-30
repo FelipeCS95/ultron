@@ -10,8 +10,8 @@ ultron::up() {
 
 ultron::down() {
   docker compose down --remove-orphans
-  docker stop $(docker ps -a -q) 2>/dev/null
-  docker rm $(docker ps -a -q) 2>/dev/null
+  docker ps -a -q | xargs -r docker stop 2>/dev/null
+  docker ps -a -q | xargs -r docker rm 2>/dev/null
 }
 
 ultron::console() {
@@ -28,10 +28,10 @@ ultron::clear() {
   ultron::down
 
   docker system prune -a -f
-  docker rmi $(docker images -a -q) 2>/dev/null
-  docker stop $(docker ps -a -q) 2>/dev/null
-  docker rm $(docker ps -a -q) 2>/dev/null
-  docker volume rm $(docker volume ls -q) 2>/dev/null
+  docker images -a -q | xargs -r docker rmi 2>/dev/null
+  docker ps -a -q | xargs -r docker stop 2>/dev/null
+  docker ps -a -q | xargs -r docker rm 2>/dev/null
+  docker volume ls -q | xargs -r docker volume rm 2>/dev/null
 }
 
 ultron::coverage() {
@@ -108,6 +108,7 @@ ultron::bisect_run() {
   local project
   project=$(ultron::current_folder)
   local cmd
-  cmd="$(cat "$ULTRON_PATH/tmp/$project/bisect_search.log" | tr -d '\r')"
-  eval "dce web bin/$cmd"
+  cmd=$(<"$ULTRON_PATH/tmp/$project/bisect_search.log")
+  cmd="${cmd//$'\r'/}"
+  dce web bin/$cmd
 }

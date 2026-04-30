@@ -1,17 +1,22 @@
 #!/bin/bash
 
 ultron::logo_title() {
-  ultron::print_title
-  ultron::check_installed figlet && figlet -w "$COLUMNS" -c ultron || echo 'ultron'
-  ultron::print_title
+  ultron::print_separator
+  ultron::check_installed figlet && figlet -w "${COLUMNS:-80}" -c ultron || echo 'ultron'
+  ultron::print_separator
+}
+
+ultron::print_separator() {
+  printf '%*s\n' "${COLUMNS:-80}" '' | tr ' ' '#'
 }
 
 ultron::print_title() {
   local title="$*"
-  local count=$(((COLUMNS - ${#title}) / 2 - 1))
-  printf %${count}s | tr " " "#"
+  local cols="${COLUMNS:-80}"
+  local count=$(((cols - ${#title}) / 2 - 1))
+  printf '%*s' "$count" '' | tr ' ' '#'
   echo -n " $title "
-  printf %${count}s | tr " " "#"
+  printf '%*s' "$count" '' | tr ' ' '#'
   echo
 }
 

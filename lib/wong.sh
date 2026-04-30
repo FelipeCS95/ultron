@@ -66,11 +66,51 @@ ultron::backup() {
   echo "=== Backup concluído ==="
 }
 
+_wong_clone() {
+  local wong="$1"
+
+  # Garante chave SSH pessoal
+  if ! ultron::check_file ~/.ssh/id_ed25519_personal; then
+    echo ""
+    echo "Chave SSH pessoal não encontrada (~/.ssh/id_ed25519_personal)."
+    read -rp "Gerar agora? [y/N] " gen
+    if [[ "${gen,,}" == "y" ]]; then
+      read -rp "Email para a chave: " email
+      ssh-keygen -t ed25519 -C "$email" -f ~/.ssh/id_ed25519_personal
+      echo ""
+      echo "Adicione esta chave no GitHub (conta FelipeCS95 > Settings > SSH keys):"
+      cat ~/.ssh/id_ed25519_personal.pub
+      echo ""
+      read -rp "Pressione Enter após registrar a chave no GitHub..."
+    else
+      echo "Pulando clone do Wong."
+      return 1
+    fi
+  fi
+
+  echo "Clonando Wong..."
+  # Tenta alias SSH (funciona se ~/.ssh/config já tem github-personal).
+  # Se não, usa a chave explicitamente — necessário no primeiro setup,
+  # quando o config do Wong ainda não foi restaurado.
+  git clone "$WONG_REPO" "$wong" 2>/dev/null \
+    || GIT_SSH_COMMAND="ssh -i ~/.ssh/id_ed25519_personal -o StrictHostKeyChecking=accept-new" \
+       git clone "git@github.com:FelipeCS95/wong.git" "$wong" \
+    || { echo "Falha ao clonar. Tente manualmente: git clone $WONG_REPO" >&2; return 1; }
+}
+
 ultron::restore_personal() {
   local wong="$PROJECTS_PATH/wong"
+
   if ! ultron::check_directory "$wong"; then
-    echo "Wong não encontrado em $wong, pulando configs pessoais"
-    return 0
+    echo ""
+    echo "Wong não encontrado em $wong."
+    read -rp "Clonar agora? [y/N] " answer
+    if [[ "${answer,,}" == "y" ]]; then
+      _wong_clone "$wong" || return 0
+    else
+      echo "Pulando configs pessoais."
+      return 0
+    fi
   fi
 
   echo "Restaurando configs pessoais..."
@@ -82,7 +122,7 @@ ultron::restore_personal() {
       && echo "  $file"
   done
 
-  # SSH
+  # SSH config e known_hosts
   mkdir -p ~/.ssh && chmod 700 ~/.ssh
   if ultron::check_file "$wong/dotfiles/.ssh/config"; then
     cp "$wong/dotfiles/.ssh/config" ~/.ssh/
@@ -91,26 +131,6 @@ ultron::restore_personal() {
   fi
   ultron::check_file "$wong/dotfiles/.ssh/known_hosts" \
     && cp "$wong/dotfiles/.ssh/known_hosts" ~/.ssh/
-
-  # Chave SSH
-  if ultron::check_file ~/.ssh/id_ed25519; then
-    chmod 600 ~/.ssh/id_ed25519
-  else
-    echo ""
-    echo "Nenhuma chave SSH encontrada. Opções:"
-    echo "  1) Gerar nova chave ed25519"
-    echo "  2) Pular (copie manualmente depois)"
-    read -rp "Escolha [1/2]: " choice
-    case "$choice" in
-      1)
-        read -rp "Email para a chave: " email
-        ssh-keygen -t ed25519 -C "$email"
-        echo "Chave pública (adicione no GitHub):"
-        cat ~/.ssh/id_ed25519.pub
-        ;;
-      *) echo "Pulando. Depois: chmod 600 ~/.ssh/id_ed25519" ;;
-    esac
-  fi
 
   # Editores
   echo "Editores..."

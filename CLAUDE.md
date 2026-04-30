@@ -103,9 +103,15 @@ O instalador verifica se já está instalado antes de rodar. PACKAGE_INFO resolv
 2. nano ~/Documents/Projects/ultron/config/restore.sh   # escolher pacotes
 3. ~/Documents/Projects/ultron/install.sh
 4. logout + login
-5. u restore                                             # inclui u restore_personal automaticamente
-6. (opcional) gerar chave SSH, registrar no GitHub, clonar Wong
+5. u restore
+   → instala pacotes e configs do sistema
+   → oferece: gerar chave SSH pessoal → clonar Wong → restaurar configs pessoais
 ```
+
+O clone do Wong acontece dentro de `ultron::restore_personal` (lib/wong.sh).
+Detalhe: se ~/.ssh/config ainda não existe (vem do próprio Wong), o clone usa
+`GIT_SSH_COMMAND` com a chave explícita. Após o clone, o SSH config é restaurado.
+URL do repo configurada em `config/env.sh` → `WONG_REPO`.
 
 ## SSH (duas contas GitHub)
 

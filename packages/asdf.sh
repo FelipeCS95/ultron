@@ -2,11 +2,12 @@
 
 # asdf foi reescrito em Go (v0.16+). Agora é um binário standalone,
 # não precisa mais de sourcing no .zshrc — só precisa estar no $PATH.
-# Nota: remova o plugin "asdf" do oh-my-zsh no .zshrc (tentava sourcear
-# o antigo ~/.asdf/asdf.sh que não existe mais).
+# Nota: remova o plugin "asdf" do oh-my-zsh no .zshrc do Wong (tentava
+# sourcear o antigo ~/.asdf/asdf.sh que não existe mais).
 
 PACKAGE_INFO=(/usr/local/bin/asdf)
 PACKAGE_KIND=file
+REQUIRED_PACKAGES=(curl)
 
 install() {
   local tag

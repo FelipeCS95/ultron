@@ -6,25 +6,49 @@ Automação de sistema e gerenciamento de pacotes para Ubuntu/WSL.
 
 Configs pessoais e segredos são gerenciados pelo [Wong](https://github.com/FelipeCS95/wong) (repo privado separado).
 
-## Instalação rápida
+## Instalação em uma máquina nova
+
+### 1. Clonar o repo
 
 ```shell
 git clone https://github.com/FelipeCS95/ultron.git ~/Documents/Projects/ultron
+```
+
+### 2. Escolher o que instalar
+
+Abra `config/restore.sh` e descomente os pacotes que quer. É o único arquivo que você precisa editar antes de prosseguir — ele tem comentários explicando cada opção (browsers, editores, docker, etc.).
+
+```shell
+nano ~/Documents/Projects/ultron/config/restore.sh
+```
+
+### 3. Rodar o setup
+
+```shell
 ~/Documents/Projects/ultron/install.sh
 ```
 
-Com um caminho customizado:
+Isso instala as dependências base (git, zsh, oh-my-zsh, asdf…) e configura o shell.
 
-```shell
-PROJECTS_PATH=~/meu/caminho
-git clone https://github.com/FelipeCS95/ultron.git $PROJECTS_PATH/ultron
-$PROJECTS_PATH/ultron/install.sh
-```
+### 4. Logout e login
 
-Após o setup, faça logout e login, então:
+Necessário para o zsh e oh-my-zsh entrarem em efeito.
+
+### 5. Restaurar pacotes e configs
 
 ```shell
 u restore
+```
+
+Instala tudo que foi configurado no passo 2.
+
+---
+
+Com um caminho de projetos customizado:
+
+```shell
+PROJECTS_PATH=~/meu/caminho bash -c \
+  'git clone https://github.com/FelipeCS95/ultron.git $PROJECTS_PATH/ultron && $PROJECTS_PATH/ultron/install.sh'
 ```
 
 ## Uso

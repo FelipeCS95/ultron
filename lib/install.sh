@@ -1,14 +1,12 @@
 #!/bin/bash
 
-# Retorna o nome do pacote apt para uma chave, ou vazio se não encontrado
 ultron::_apt_name_for() {
   local key="$1"
   local entry
-  source "$ULTRON_PATH/config/packages/apt.sh"
+  source "$ULTRON_PATH/config/apt.sh"
   for entry in "${APT_PACKAGES[@]}"; do
     local entry_key="${entry%%:*}"
     if [[ "$entry_key" == "$key" ]]; then
-      # Se tem mapeamento explícito (chave:nome-apt), usa ele; senão troca _ por -
       [[ "$entry" == *":"* ]] && echo "${entry#*:}" || echo "${key//_/-}"
       return 0
     fi
@@ -16,11 +14,10 @@ ultron::_apt_name_for() {
   return 1
 }
 
-# Retorna o nome do pacote snap para uma chave, ou vazio se não encontrado
 ultron::_snap_name_for() {
   local key="$1"
   local entry
-  source "$ULTRON_PATH/config/packages/snap.sh"
+  source "$ULTRON_PATH/config/snap.sh"
   for entry in "${SNAP_PACKAGES[@]}"; do
     local entry_key="${entry%%:*}"
     if [[ "$entry_key" == "$key" ]]; then
@@ -54,9 +51,9 @@ ultron::install() {
 
       local is_installed=false
       case "$PACKAGE_KIND" in
-        file)      ultron::check_file "${PACKAGE_INFO[*]}"         && is_installed=true ;;
-        directory) ultron::check_directory "${PACKAGE_INFO[*]}"    && is_installed=true ;;
-        *)         ultron::check_all_installed "${PACKAGE_INFO[@]}" && is_installed=true ;;
+        file)      ultron::check_file "${PACKAGE_INFO[*]}"          && is_installed=true ;;
+        directory) ultron::check_directory "${PACKAGE_INFO[*]}"     && is_installed=true ;;
+        *)         ultron::check_all_installed "${PACKAGE_INFO[@]}"  && is_installed=true ;;
       esac
 
       ultron::print_title "INSTALL $(ultron::uppercase "$pkg")"

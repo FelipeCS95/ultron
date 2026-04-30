@@ -1,7 +1,7 @@
 #!/bin/bash
 
 _ultron_commands() {
-  grep -rhoP 'ultron::\K\w+' "$ULTRON_PATH"/main/ultron/*.sh | sort -u
+  grep -rhoP 'ultron::\K\w+' "$ULTRON_PATH"/lib/*.sh | sort -u
 }
 
 _ultron_projects() {

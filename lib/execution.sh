@@ -5,7 +5,7 @@ ultron::current_folder() {
 }
 
 ultron::import_functions() {
-  local directory="$ULTRON_PATH/main/$1"
+  local directory="$ULTRON_PATH/projects/$1"
   ultron::check_directory "$directory" || return
 
   ultron::check_file "$directory.sh" && . "$directory.sh"
@@ -22,7 +22,7 @@ ultron::execute_function() {
   project_name=$(ultron::normalize_project_name "$folder_name")
   local cmd="$1"; shift
 
-  # ultron's own functions are already loaded — re-importing causes infinite recursion
+  # Funções do próprio ultron já estão carregadas — reimportar causaria recursão
   if [[ "$project_name" != "ultron" ]]; then
     ultron::import_functions "$project_name"
   fi
@@ -35,7 +35,7 @@ ultron::execute_function() {
   elif ultron::check_function "$ultron_function"; then
     "$ultron_function" "$@"
   else
-    echo "Command not found: $cmd" >&2
+    echo "Comando não encontrado: $cmd" >&2
     return 127
   fi
 }

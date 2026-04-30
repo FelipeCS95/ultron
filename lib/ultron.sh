@@ -1,17 +1,20 @@
 #!/bin/bash
 
+# Guard: evita re-execução quando sourced dentro do subshell de ultron()
+[[ -n "$_ULTRON_INIT" ]] && return
+
 . "$ULTRON_PATH/config/helpers.sh"
 
 ultron() {
   local cmd="$1"
 
   if [[ -z "$cmd" || "$cmd" == "help" ]]; then
-    echo "Available commands:"
-    echo "  projects          Go to projects directory"
-    echo "  <project_name>    Go to a project by name"
-    echo "  <command>         Run an ultron:: command"
+    echo "Comandos disponíveis:"
+    echo "  projects          Vai para o diretório de projetos"
+    echo "  <nome_projeto>    Vai para o diretório de um projeto"
+    echo "  <comando>         Executa um comando ultron::"
     echo ""
-    echo "Detected commands (ultron::):"
+    echo "Comandos detectados (ultron::):"
     _ultron_commands | sed 's/^/  /' | column
     return 0
   fi
@@ -31,7 +34,7 @@ ultron() {
     . "$ULTRON_PATH/config/env.sh"
 
     local file
-    for file in "$ULTRON_PATH"/main/ultron/*.sh; do
+    for file in "$ULTRON_PATH"/lib/*.sh; do
       . "$file"
     done
 
@@ -41,4 +44,5 @@ ultron() {
 }
 alias u=ultron
 
+_ULTRON_INIT=1
 u kill_sessions

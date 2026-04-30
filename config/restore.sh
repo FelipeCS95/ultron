@@ -5,3 +5,7 @@ RESTORE_PACKAGES=(
   powerfonts
   vim
 )
+
+RESTORE_CONFIGS=(
+  ultron
+)

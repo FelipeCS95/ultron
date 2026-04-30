@@ -14,4 +14,4 @@ PROJECTS_PATH=$(
 )
 ULTRON_PATH=$PROJECTS_PATH/ultron
 
-. "$ULTRON_PATH/main/ultron.sh"
+. "$ULTRON_PATH/lib/ultron.sh"

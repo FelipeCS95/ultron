@@ -1,0 +1,12 @@
+#!/bin/bash
+
+PACKAGE_INFO=(docker-compose-plugin)
+REQUIRED_PACKAGES=(docker)
+
+install() {
+  sudo apt-get install -y docker-compose-plugin
+}
+
+remove() {
+  sudo apt-get remove -y docker-compose-plugin
+}

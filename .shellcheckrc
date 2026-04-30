@@ -1,0 +1,7 @@
+# ~/.shellcheckrc
+
+# Desabilita SC1090 (source de arquivos não existentes)
+disable=SC1090
+# Desabilita SC1091 (source dinâmico)
+disable=SC1091
+

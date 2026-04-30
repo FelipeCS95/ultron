@@ -21,5 +21,5 @@ ultron::setup() {
   done
 
   echo 'Setup concluído!'
-  echo 'Faça logout ou execute: gnome-session-quit'
+  echo 'Faça logout e login.'
 }

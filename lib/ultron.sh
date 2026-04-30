@@ -45,4 +45,4 @@ ultron() {
 alias u=ultron
 
 _ULTRON_INIT=1
-u kill_sessions
+ultron kill_sessions

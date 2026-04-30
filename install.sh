@@ -27,7 +27,7 @@ echo ""
 echo "Running setup..."
 # shellcheck source=/dev/null
 source "$ULTRON_PATH/main.sh"
-u setup
+ultron setup
 
 echo ""
 echo "=== Ultron installed ==="

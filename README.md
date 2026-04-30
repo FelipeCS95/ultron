@@ -10,7 +10,14 @@ Configs pessoais e segredos são gerenciados pelo [Wong](https://github.com/Feli
 
 ### 1. Clonar o repo
 
+Se o `git` não estiver instalado:
+
 ```shell
+sudo apt update && sudo apt install -y git
+```
+
+```shell
+mkdir -p ~/Documents/Projects
 git clone https://github.com/FelipeCS95/ultron.git ~/Documents/Projects/ultron
 ```
 

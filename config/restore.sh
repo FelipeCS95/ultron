@@ -12,7 +12,7 @@ RESTORE_PACKAGES=(
   vim
 
   # --- Fontes e terminal ---
-  powerfonts
+  # powerfonts
   # terminator
 
   # --- Navegador (escolha um) ---

@@ -9,7 +9,7 @@ ultron::config() {
   local pkg_file="$ULTRON_PATH/packages/${pkg_name}.sh"
 
   if [[ ! -f "$pkg_file" ]]; then
-    echo "Package not found: $pkg" >&2
+    echo "Pacote não encontrado: $pkg" >&2
     return 1
   fi
 
@@ -21,7 +21,7 @@ ultron::config() {
     if declare -f config &>/dev/null; then
       config
     else
-      echo "No config function for $pkg" >&2
+      echo "Nenhuma função config para $pkg" >&2
     fi
   )
 }

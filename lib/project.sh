@@ -10,27 +10,19 @@ ultron::up() {
 
 ultron::down() {
   docker compose down --remove-orphans
-  docker ps -a -q | xargs -r docker stop 2>/dev/null
-  docker ps -a -q | xargs -r docker rm 2>/dev/null
 }
 
 ultron::console() {
   ultron::up "${1:-}"
-  dce web sh
-}
-
-ultron::prepare() {
-  echo "Command not implemented: prepare" >&2
-  return 127
+  docker compose exec web sh
 }
 
 ultron::clear() {
-  ultron::down
+  read -rp "Isso vai remover todos os containers, imagens e volumes Docker. Confirmar? [y/N] " confirm
+  [[ "${confirm,,}" != "y" ]] && return 0
 
+  ultron::down
   docker system prune -a -f
-  docker images -a -q | xargs -r docker rmi 2>/dev/null
-  docker ps -a -q | xargs -r docker stop 2>/dev/null
-  docker ps -a -q | xargs -r docker rm 2>/dev/null
   docker volume ls -q | xargs -r docker volume rm 2>/dev/null
 }
 
@@ -39,14 +31,9 @@ ultron::coverage() {
   if [[ -f "$coverage_path" ]]; then
     echo "file://$PROJECT_SYSTEM_PATH$coverage_path"
   else
-    echo "Coverage report not found at: $coverage_path"
+    echo "Relatório de cobertura não encontrado em: $coverage_path"
     return 1
   fi
-}
-
-ultron::vpn() {
-  echo "Command not implemented: vpn" >&2
-  return 127
 }
 
 ultron::bisect() {
@@ -54,7 +41,7 @@ ultron::bisect() {
   shift
 
   if [[ -z "$action" ]]; then
-    echo "Usage: ultron bisect <prepare|search|show|run>"
+    echo "Usage: u bisect <prepare|search|show|run>"
     return 1
   fi
 
@@ -62,7 +49,7 @@ ultron::bisect() {
   if declare -f "$function_name" > /dev/null; then
     "$function_name" "$@"
   else
-    echo "Invalid action: $action"
+    echo "Ação inválida: $action"
     return 1
   fi
 }
@@ -94,7 +81,7 @@ ultron::bisect_search() {
   project=$(ultron::current_folder)
   local log_file="$ULTRON_PATH/tmp/$project/bisect_search.log"
   . "$ULTRON_PATH/tmp/$project/bisect_prepare.log"
-  dce web bin/rspec "${BISECT_FILES[@]}" --bisect --seed "$BISECT_SEED" \
+  docker compose exec web bin/rspec "${BISECT_FILES[@]}" --bisect --seed "$BISECT_SEED" \
     | tee >(grep -A1 "The minimal reproduction command is:" | tail -n 1 | sed 's/.*\(rspec.*\)/\1/' > "$log_file")
 }
 
@@ -110,5 +97,5 @@ ultron::bisect_run() {
   local cmd
   cmd=$(<"$ULTRON_PATH/tmp/$project/bisect_search.log")
   cmd="${cmd//$'\r'/}"
-  dce web bin/$cmd
+  docker compose exec web bin/$cmd
 }

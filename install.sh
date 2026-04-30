@@ -5,7 +5,7 @@ echo "=== Ultron Bootstrap ==="
 
 # Install git if not present
 if ! command -v git &>/dev/null; then
-  echo "Installing git..."
+  echo "Instalando git..."
   sudo apt update && sudo apt install -y git
 fi
 
@@ -14,21 +14,21 @@ PROJECTS_PATH="${PROJECTS_PATH:-$HOME/Documents/Projects}"
 ULTRON_PATH="$PROJECTS_PATH/ultron"
 
 if [[ -d "$ULTRON_PATH/.git" ]]; then
-  echo "Ultron already exists at $ULTRON_PATH"
-  echo "Pulling latest..."
+  echo "Ultron já existe em $ULTRON_PATH"
+  echo "Atualizando..."
   git -C "$ULTRON_PATH" pull
 else
-  echo "Cloning ultron..."
+  echo "Clonando ultron..."
   mkdir -p "$PROJECTS_PATH"
   git clone https://github.com/FelipeCS95/ultron.git "$ULTRON_PATH"
 fi
 
 echo ""
-echo "Running setup..."
+echo "Executando setup..."
 # shellcheck source=/dev/null
 source "$ULTRON_PATH/main.sh"
 ultron setup
 
 echo ""
-echo "=== Ultron installed ==="
-echo "Logout and login, then run: u restore"
+echo "=== Ultron instalado ==="
+echo "Faça logout e login, depois execute: u restore"

@@ -50,7 +50,7 @@ ultron::install() {
       done
 
       ultron::print_title "INSTALL $(ultron::uppercase "$pkg")"
-      _pkg_is_installed && echo "$pkg already installed" || install  # alternativa ao if/then/else; ok pois echo raramente falha
+      _pkg_is_installed && echo "$pkg já instalado" || install  # alternativa ao if/then/else; ok pois echo raramente falha
     )
     return
   fi
@@ -60,7 +60,7 @@ ultron::install() {
   if apt_name=$(ultron::_apt_name_for "$pkg_name"); then
     ultron::print_title "INSTALL $(ultron::uppercase "$pkg")"
     ultron::check_installed "$apt_name" \
-      && echo "$pkg already installed" \
+      && echo "$pkg já instalado" \
       || sudo apt-get install -y "$apt_name"  # alternativa ao if/then/else; ok pois echo raramente falha
     return
   fi

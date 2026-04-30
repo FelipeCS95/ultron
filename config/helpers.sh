@@ -1,7 +1,10 @@
 #!/bin/bash
 
 _ultron_commands() {
-  grep -rho 'ultron::[a-zA-Z0-9_]*' "$ULTRON_PATH"/lib/*.sh | sed 's/.*ultron:://' | sort -u
+  grep -rhoE 'ultron::[a-zA-Z0-9_]+[[:space:]]*\(\)' "$ULTRON_PATH"/lib/*.sh \
+    | sed 's/.*ultron:://; s/[[:space:]]*()//' \
+    | grep -Ev '^(_|check_|print_|logo_title|uppercase|lowercase|normalize_|current_folder|import_functions|execute_function|restore_personal|change_files_owner|get_theme|bisect_)' \
+    | sort -u
 }
 
 _ultron_projects() {
@@ -15,7 +18,7 @@ _ultron_completion() {
   . "$ULTRON_PATH"/config/completions.sh
 
   COMPREPLY=()
-  if [[ "$prev_arg" == "ultron" ]]; then
+  if [[ "$COMP_CWORD" == 1 ]]; then
     while IFS= read -r line; do
       COMPREPLY+=("$line")
     done < <(compgen -W "projects $(_ultron_projects) $(_ultron_commands)" -- "$cur_word")
@@ -28,3 +31,4 @@ _ultron_completion() {
   fi
 }
 complete -F _ultron_completion ultron
+complete -F _ultron_completion u

@@ -21,6 +21,7 @@ RESTORE_PACKAGES=(
 
   # --- Editor de código (escolha um ou mais) ---
   # vscode
+  # antigravity   # IDE do Google, compatível com extensões VSCode
 
   # --- Dev: linguagens e runtimes ---
   # rvm          # Ruby (via PPA)
@@ -53,5 +54,6 @@ RESTORE_PACKAGES=(
 
 RESTORE_CONFIGS=(
   ultron
-  # vscode       # sincroniza settings e extensões via Wong
+  # vscode        # sincroniza settings e extensões via Wong
+  # antigravity   # sincroniza settings e extensões via Wong
 )

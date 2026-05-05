@@ -11,7 +11,13 @@ _wong_backup_editor() {
   mkdir -p "$wong_dir"
   ultron::check_file "$config_dir/settings.json" \
     && cp "$config_dir/settings.json" "$wong_dir/"
-  "$cmd" --list-extensions > "$wong_dir/extensions.txt"
+  local extensions
+  extensions=$("$cmd" --list-extensions 2>/dev/null)
+  if [[ -n "$extensions" ]]; then
+    echo "$extensions" > "$wong_dir/extensions.txt"
+  else
+    echo "    Aviso: $cmd --list-extensions retornou vazio — extensions.txt não atualizado." >&2
+  fi
 }
 
 _wong_restore_editor() {

@@ -32,7 +32,7 @@ projects/
   totalpass.sh       Env vars do projeto TotalPass
   totalpass/
     functions.sh     totalpass::prepare, clear, etc. — delegam para ultron:: onde possível
-packages/            13 arquivos com lógica especial de instalação (repos externos, scripts customizados)
+packages/            arquivos com lógica especial de instalação (repos externos, scripts customizados, config de integração)
 config/
   apt.sh             APT_PACKAGES — pacotes simples via apt (formato: chave ou chave:nome-apt)
   snap.sh            SNAP_PACKAGES — pacotes simples via snap
@@ -87,6 +87,10 @@ O instalador verifica se já está instalado antes de rodar via `_pkg_is_install
 - **`_pkg_normalize` em `lib/text.sh`** — converte nome de pacote para nome de arquivo (`-` → `_`, lowercase). Usada em install, remove e config.
 - **`ultron::print_separator`** para linha cheia de `#`; **`ultron::print_title "TEXTO"`** para linha com título. Não chamar `print_title` sem argumento.
 - **config/restore.sh é o arquivo de configuração do usuário** — deve ter todas as opções comentadas para o usuário escolher antes de rodar install.sh.
+- **`install.sh` não usa `set -euo pipefail`** — o flag `-e` encerra o script quando qualquer comando retorna não-zero; o prompt de senha do sudo dispara isso e fecha o terminal. Scripts de bootstrap interativos não devem usar `-e`.
+- **`${_ULTRON_INIT:-}` em vez de `$_ULTRON_INIT`** — a forma sem `:-` quebra quando bash roda com `-u` (variável não declarada = erro). O `:-` é defensivo e necessário.
+- **`packages/zsh.sh` chama `chsh`** — o instalador do oh-my-zsh usa `CHSH=no` delegando a mudança de shell para cá. Não reverter esse `CHSH=no`.
+- **`config()` em packages para integração com GNOME** — quando um pacote precisa de ajuste de desktop (ex: slack no Wayland), `config()` cria um override em `~/.local/share/applications/` que sobrevive a `snap refresh`. Chamar com `u config <pkg>` ou via `RESTORE_CONFIGS`.
 
 ---
 

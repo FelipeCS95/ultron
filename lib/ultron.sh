@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Guard: evita re-execução quando sourced dentro do subshell de ultron()
-[[ -n "$_ULTRON_INIT" ]] && return
+[[ -n "${_ULTRON_INIT:-}" ]] && return
 
 . "$ULTRON_PATH/config/helpers.sh"
 

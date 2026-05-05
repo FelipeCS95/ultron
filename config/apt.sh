@@ -13,9 +13,7 @@ APT_PACKAGES=(
   graphviz
   redis
   snapd
-  terminator
   gitk
-  zsh
   libpq_dev:libpq-dev
   libreadline_dev:libreadline-dev
   build_essential:build-essential

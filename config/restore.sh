@@ -12,11 +12,11 @@ RESTORE_PACKAGES=(
   vim
 
   # --- Fontes e terminal ---
-  # powerfonts
-  # terminator
+  powerfonts
+  terminator
 
   # --- Navegador (escolha um) ---
-  # chrome
+  chrome
   # brave
 
   # --- Editor de código (escolha um ou mais) ---
@@ -25,15 +25,15 @@ RESTORE_PACKAGES=(
 
   # --- Dev: linguagens e runtimes ---
   # rvm          # Ruby (via PPA)
-  # asdf         # Version manager universal
+  asdf         # Version manager universal
 
   # --- Dev: banco de dados ---
   # postgres
   # redis
 
   # --- Dev: containers ---
-  # docker
-  # docker_compose
+  docker
+  docker_compose
 
   # --- Dev: cloud e infra ---
   # kubectl
@@ -54,6 +54,7 @@ RESTORE_PACKAGES=(
 
 RESTORE_CONFIGS=(
   ultron
-  # vscode        # sincroniza settings e extensões via Wong
+  vscode        # sincroniza settings e extensões via Wong
   # antigravity   # sincroniza settings e extensões via Wong
+  # slack         # corrige lançamento no GNOME/Wayland (override do .desktop)
 )

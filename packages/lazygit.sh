@@ -3,7 +3,14 @@
 PACKAGE_INFO=(lazygit)
 
 install() {
-  sudo add-apt-repository ppa:lazygit-team/release -y
-  sudo apt update
-  sudo apt install -y lazygit
+  local version
+  version=$(curl -s https://api.github.com/repos/jesseduffield/lazygit/releases/latest \
+    | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')
+  local url="https://github.com/jesseduffield/lazygit/releases/download/v${version}/lazygit_${version}_Linux_x86_64.tar.gz"
+  local tmp
+  tmp=$(mktemp -d)
+  curl -L "$url" -o "$tmp/lazygit.tar.gz"
+  tar -xf "$tmp/lazygit.tar.gz" -C "$tmp"
+  sudo install "$tmp/lazygit" /usr/local/bin/lazygit
+  rm -rf "$tmp"
 }

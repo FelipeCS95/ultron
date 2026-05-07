@@ -5,7 +5,7 @@ REQUIRED_PACKAGES=(lazygit nerd_fonts)
 
 install() {
   sudo add-apt-repository ppa:neovim-ppa/unstable -y
-  sudo apt update
+  sudo apt update || true
   sudo apt install -y neovim
 
   # LazyVIM starter — só instala se não houver config própria

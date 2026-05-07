@@ -5,7 +5,8 @@ _ultron_dev_kitty_session() {
   local file="/tmp/ultron-dev-${project}.session"
   printf 'new_tab %s: editor\ncd %s\nlaunch nvim\n\n'                        "$project" "$dir"              > "$file"
   printf 'new_tab %s: console\ncd %s\nlaunch zsh -i -c "%s; exec zsh"\n\n'   "$project" "$dir" "$console_cmd" >> "$file"
-  printf 'new_tab %s: claude\ncd %s\nlaunch zsh -i -c "claude; exec zsh"\n'  "$project" "$dir"              >> "$file"
+  printf 'new_tab %s: claude\ncd %s\nlaunch zsh -i -c "claude; exec zsh"\n\n' "$project" "$dir"              >> "$file"
+  printf 'new_tab %s: shell\ncd %s\n'                                         "$project" "$dir"              >> "$file"
   echo "$file"
 }
 
@@ -34,6 +35,7 @@ ultron::dev() {
       zsh -i -c "$console_cmd; exec zsh"
     kitty @ launch --type=tab --tab-title="${project}: claude" --cwd="$dir" \
       zsh -i -c "claude; exec zsh"
+    kitty @ launch --type=tab --tab-title="${project}: shell" --cwd="$dir"
     kitty @ focus-tab --match "title:${project}: editor" 2>/dev/null || true
     cd "$dir" && nvim
     return
@@ -55,8 +57,9 @@ ultron::dev() {
   tmux send-keys -t "$session:editor"  "nvim" Enter
   tmux new-window -t "$session" -n "console" -c "$dir"
   tmux send-keys -t "$session:console" "$console_cmd" Enter
-  tmux new-window -t "$session" -n "claude"  -c "$dir"
-  tmux send-keys -t "$session:claude"  "claude" Enter
+  tmux new-window -t "$session" -n "claude" -c "$dir"
+  tmux send-keys -t "$session:claude" "claude" Enter
+  tmux new-window -t "$session" -n "shell"  -c "$dir"
   tmux select-window -t "$session:editor"
   [[ -n "${TMUX:-}" ]] && tmux switch-client -t "$session" || tmux attach -t "$session"
 }

@@ -13,13 +13,18 @@ RESTORE_PACKAGES=(
 
   # --- Fontes e terminal ---
   powerfonts
-  terminator
+  nerd_fonts
+  kitty
+  tmux
+  starship
+  # terminator
 
   # --- Navegador (escolha um) ---
   chrome
   # brave
 
   # --- Editor de código (escolha um ou mais) ---
+  nvim
   # vscode
   # antigravity   # IDE do Google, compatível com extensões VSCode
 
@@ -54,6 +59,10 @@ RESTORE_PACKAGES=(
 
 RESTORE_CONFIGS=(
   ultron
+  kitty         # restaura ~/.config/kitty/ do Wong
+  tmux          # restaura ~/.tmux.conf do Wong
+  nvim          # restaura ~/.config/nvim/ do Wong
+  starship      # restaura ~/.config/starship.toml e garante linha no .zshrc
   vscode        # sincroniza settings e extensões via Wong
   # antigravity   # sincroniza settings e extensões via Wong
   # slack         # corrige lançamento no GNOME/Wayland (override do .desktop)

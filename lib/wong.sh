@@ -62,6 +62,33 @@ ultron::backup() {
   _wong_backup_editor code        "$HOME/.config/Code/User"        "$wong/configs/vscode"
   _wong_backup_editor antigravity "$HOME/.config/Antigravity/User" "$wong/configs/antigravity"
 
+  # NeoVIM (somente config — plugins ficam em ~/.local/share/nvim, não fazer backup)
+  if [[ -d ~/.config/nvim ]]; then
+    echo "  nvim..."
+    mkdir -p "$wong/configs/nvim"
+    cp -r ~/.config/nvim/. "$wong/configs/nvim/"
+  fi
+
+  # Kitty
+  if [[ -d ~/.config/kitty ]]; then
+    echo "  kitty..."
+    mkdir -p "$wong/configs/kitty"
+    cp -r ~/.config/kitty/. "$wong/configs/kitty/"
+  fi
+
+  # Starship
+  if ultron::check_file ~/.config/starship.toml; then
+    echo "  starship..."
+    mkdir -p "$wong/configs/starship"
+    cp ~/.config/starship.toml "$wong/configs/starship/"
+  fi
+
+  # tmux
+  if ultron::check_file ~/.tmux.conf; then
+    echo "  tmux..."
+    cp ~/.tmux.conf "$wong/dotfiles/"
+  fi
+
   # Terminator
   if ultron::check_file ~/.config/terminator/config; then
     echo "  terminator..."
@@ -142,6 +169,33 @@ ultron::restore_personal() {
   echo "Editores..."
   _wong_restore_editor code        "$HOME/.config/Code/User"        "$wong/configs/vscode"
   _wong_restore_editor antigravity "$HOME/.config/Antigravity/User" "$wong/configs/antigravity"
+
+  # NeoVIM
+  if [[ -d "$wong/configs/nvim" ]]; then
+    mkdir -p ~/.config/nvim
+    cp -r "$wong/configs/nvim/." ~/.config/nvim/
+    echo "  nvim"
+  fi
+
+  # Kitty
+  if [[ -d "$wong/configs/kitty" ]]; then
+    mkdir -p ~/.config/kitty
+    cp -r "$wong/configs/kitty/." ~/.config/kitty/
+    echo "  kitty"
+  fi
+
+  # Starship
+  if ultron::check_file "$wong/configs/starship/starship.toml"; then
+    mkdir -p ~/.config
+    cp "$wong/configs/starship/starship.toml" ~/.config/starship.toml
+    echo "  starship"
+  fi
+
+  # tmux
+  if ultron::check_file "$wong/dotfiles/.tmux.conf"; then
+    cp "$wong/dotfiles/.tmux.conf" ~/
+    echo "  .tmux.conf"
+  fi
 
   # Terminator
   if ultron::check_file "$wong/configs/terminator/config"; then

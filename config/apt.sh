@@ -23,4 +23,8 @@ APT_PACKAGES=(
   gnome_tweaks:gnome-tweaks
   lsb_release:lsb-release
   powerfonts:fonts-powerline
+  ripgrep
+  fzf
+  fd_find:fd-find
+  unzip
 )

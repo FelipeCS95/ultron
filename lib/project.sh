@@ -1,5 +1,66 @@
 #!/bin/bash
 
+_ultron_dev_kitty_session() {
+  local project="$1" dir="$2" console_cmd="$3"
+  local file="/tmp/ultron-dev-${project}.session"
+  printf 'new_tab %s: editor\ncd %s\nlaunch nvim\n\n'                        "$project" "$dir"              > "$file"
+  printf 'new_tab %s: console\ncd %s\nlaunch zsh -i -c "%s; exec zsh"\n\n'   "$project" "$dir" "$console_cmd" >> "$file"
+  printf 'new_tab %s: claude\ncd %s\nlaunch zsh -i -c "claude; exec zsh"\n'  "$project" "$dir"              >> "$file"
+  echo "$file"
+}
+
+ultron::dev() {
+  local project="${1:-.}"
+  local profile="${2:-}"
+
+  local dir
+  if [[ "$project" == "." || -z "$project" ]]; then
+    dir="$PWD"
+    project=$(basename "$PWD")
+  else
+    dir="$PROJECTS_PATH/$project"
+  fi
+
+  [[ -d "$dir" ]] || { echo "Projeto não encontrado: $dir" >&2; return 1; }
+
+  local console_cmd="u console"
+  [[ -n "$profile" ]] && console_cmd="u console $profile"
+
+  # Dentro do Kitty com remote control: abre abas na janela atual e roda nvim aqui
+  # ${project} com chaves evita que zsh interprete ":editor"/":console" como modificadores
+  if [[ -n "${KITTY_WINDOW_ID:-}" ]] && kitty @ ls &>/dev/null; then
+    kitty @ set-tab-title "${project}: editor"
+    kitty @ launch --type=tab --tab-title="${project}: console" --cwd="$dir" \
+      zsh -i -c "$console_cmd; exec zsh"
+    kitty @ launch --type=tab --tab-title="${project}: claude" --cwd="$dir" \
+      zsh -i -c "claude; exec zsh"
+    kitty @ focus-tab --match "title:${project}: editor" 2>/dev/null || true
+    cd "$dir" && nvim
+    return
+  fi
+
+  # Fallback: nova janela Kitty via session file (Kitty sem remote control)
+  if command -v kitty &>/dev/null; then
+    kitty --session "$(_ultron_dev_kitty_session "$project" "$dir" "$console_cmd")" --detach
+    return
+  fi
+
+  # Fallback: tmux (SSH ou ambiente sem Kitty)
+  local session="$project"
+  if tmux has-session -t "$session" 2>/dev/null; then
+    [[ -n "${TMUX:-}" ]] && tmux switch-client -t "$session" || tmux attach -t "$session"
+    return
+  fi
+  tmux new-session -d -s "$session" -n "editor"  -c "$dir"
+  tmux send-keys -t "$session:editor"  "nvim" Enter
+  tmux new-window -t "$session" -n "console" -c "$dir"
+  tmux send-keys -t "$session:console" "$console_cmd" Enter
+  tmux new-window -t "$session" -n "claude"  -c "$dir"
+  tmux send-keys -t "$session:claude"  "claude" Enter
+  tmux select-window -t "$session:editor"
+  [[ -n "${TMUX:-}" ]] && tmux switch-client -t "$session" || tmux attach -t "$session"
+}
+
 ultron::up() {
   if [[ -n "$1" ]]; then
     docker compose --profile="$1" up -d

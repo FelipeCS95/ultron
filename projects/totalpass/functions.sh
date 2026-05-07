@@ -39,3 +39,7 @@ totalpass::vpn() {
 totalpass::bisect() {
   ultron::bisect "$@"
 }
+
+totalpass::dev() {
+  ultron::dev totalpass "$@"
+}

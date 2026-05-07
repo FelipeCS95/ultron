@@ -2,136 +2,131 @@
 
 # Ultron
 
-Automação de sistema e gerenciamento de pacotes para Ubuntu/WSL.
+Framework bash para setup e gerenciamento de ambiente de desenvolvimento no Ubuntu/WSL.
 
-Configs pessoais e segredos são gerenciados pelo [Wong](https://github.com/Kvothe62/wong) (repo privado separado).
+Inclui instalação de pacotes, uma stack de desenvolvimento moderna, e integração com o [Wong](https://github.com/Kvothe62/wong) (repo privado com dotfiles e configs pessoais).
+
+## Stack incluída
+
+| Ferramenta | Papel |
+|---|---|
+| **Kitty** | Terminal com GPU, session files, Ctrl+Alt+T |
+| **tmux** | Multiplexador (fallback para SSH e ambientes sem Kitty) |
+| **NeoVIM + LazyVIM** | Editor com LSP, fuzzy finder, git integrado |
+| **Starship** | Prompt informativo, troca de tema via `u theme` |
+| **zsh + oh-my-zsh** | Shell com autosuggestions, syntax highlighting, fzf |
+| **gum** | UI interativa nos comandos do Ultron |
+| **lazygit** | Git visual dentro do nvim (`<Space>gg`) e no terminal |
+
+---
 
 ## Instalação em uma máquina nova
 
 ### 1. Clonar o repo
 
-Se o `git` não estiver instalado:
-
 ```shell
 sudo apt update && sudo apt install -y git
-```
-
-```shell
 mkdir -p ~/Documents/Projects
 git clone https://github.com/Kvothe62/ultron.git ~/Documents/Projects/ultron
 ```
 
-### 2. Escolher o que instalar
-
-Abra `config/restore.sh` e descomente os pacotes que quer. É o único arquivo que você precisa editar antes de prosseguir — ele tem comentários explicando cada opção (browsers, editores, docker, etc.).
-
-```shell
-nano ~/Documents/Projects/ultron/config/restore.sh
-```
-
-### 3. Rodar o setup
+### 2. Rodar o setup
 
 ```shell
 ~/Documents/Projects/ultron/install.sh
 ```
 
-Isso instala as dependências base (git, zsh, oh-my-zsh, asdf…) e configura o shell.
+Instala as dependências base (git, zsh, oh-my-zsh, asdf) e configura o shell.
 
-### 4. Logout e login
+### 3. Logout e login
 
 Necessário para o zsh e oh-my-zsh entrarem em efeito.
 
-### 5. Restaurar pacotes e configs
+### 4. Restaurar pacotes e configs
 
 ```shell
 u restore
 ```
 
-Instala tudo que foi configurado no passo 2.
+Abre um menu interativo para selecionar o que instalar. Os pacotes configurados em `config/restore.sh` já vêm pré-selecionados — ajuste e confirme. Ao final, oferece clonar o Wong e restaurar configs pessoais.
 
 ---
 
-Com um caminho de projetos customizado:
+Com caminho de projetos customizado:
 
 ```shell
 PROJECTS_PATH=~/meu/caminho bash -c \
   'git clone https://github.com/Kvothe62/ultron.git $PROJECTS_PATH/ultron && $PROJECTS_PATH/ultron/install.sh'
 ```
 
+---
+
 ## Uso
 
-```shell
-u help              # Lista todos os comandos
-u <nome_projeto>    # Navega para um projeto
-u projects          # Navega para o diretório de projetos
-u install <pkg>     # Instala um pacote
-u remove <pkg>      # Remove um pacote
-u backup            # Faz backup das configs pessoais (delega ao Wong)
-u setup             # Setup completo do sistema
-u restore           # Restaura pacotes e configs
-```
-
-## Chaves SSH em uma máquina nova
-
-A recomendação é **gerar uma chave nova por máquina** e registrá-la no GitHub.
-É mais seguro do que carregar a mesma chave em todas as máquinas — e leva menos de 5 minutos.
-
-### 1. Gerar as chaves
+### Navegação
 
 ```shell
-# Chave pessoal
-ssh-keygen -t ed25519 -C "seu@email.com" -f ~/.ssh/id_ed25519_personal
-
-# Chave de trabalho (se necessário)
-ssh-keygen -t ed25519 -C "voce@empresa.com" -f ~/.ssh/id_ed25519_work
+u projects            # cd para o diretório de projetos
+u <nome_projeto>      # cd para $PROJECTS_PATH/<nome>
 ```
 
-### 2. Configurar `~/.ssh/config`
-
-Crie ou edite `~/.ssh/config` para rotear cada conta para a chave certa.
-O `IdentitiesOnly yes` impede o SSH agent de usar a chave errada quando há múltiplas carregadas.
-
-```
-# Conta pessoal — alias "github-personal"
-Host github-personal
-  HostName github.com
-  User git
-  IdentityFile ~/.ssh/id_ed25519_personal
-  IdentitiesOnly yes
-  AddKeysToAgent yes
-
-# Conta de trabalho — usa github.com diretamente
-Host github.com
-  HostName github.com
-  User git
-  IdentityFile ~/.ssh/id_ed25519_work
-  IdentitiesOnly yes
-  AddKeysToAgent yes
-```
-
-> Com essa config, repositórios pessoais usam `git@github-personal:Usuario/repo.git`
-> e repositórios de trabalho usam `git@github.com:Empresa/repo.git`.
-
-### 3. Registrar as chaves públicas no GitHub
+### Pacotes
 
 ```shell
-cat ~/.ssh/id_ed25519_personal.pub  # copiar e adicionar em: GitHub → Settings → SSH keys
-cat ~/.ssh/id_ed25519_work.pub      # idem, na conta de trabalho
+u install             # abre filtro fuzzy para escolher o pacote
+u install <pkg>       # instala um pacote específico
+u remove <pkg>        # remove um pacote
+u config <pkg>        # aplica config pós-install de um pacote
 ```
 
-### 4. Testar
+### Ambiente de desenvolvimento
 
 ```shell
-ssh -T git@github-personal  # deve mostrar: Hi <usuario_pessoal>!
-ssh -T git@github.com       # deve mostrar: Hi <usuario_trabalho>!
+u dev                 # abre ambiente para o projeto do diretório atual
+u dev <projeto>       # abre ambiente para o projeto especificado
+u dev <projeto> <profile>  # passa profile para u console (docker compose --profile)
 ```
 
-### 5. Clonar repos pessoais com o alias
+Abre 4 abas no Kitty: **editor** (nvim) · **console** (docker) · **claude** · **shell**.
+Detecta automaticamente se está dentro do Kitty. Fallback: session file (nova janela) ou tmux (SSH).
+
+### Temas
 
 ```shell
-# Ao invés de git@github.com:Kvothe62/...
-git clone git@github-personal:Kvothe62/ultron.git
-git clone git@github-personal:Kvothe62/wong.git
+u theme               # menu interativo: escolhe entre presets do starship ou tema do Kitty
+u theme <preset>      # aplica preset diretamente (ex: u theme tokyo-night)
+u theme kitty         # abre kitten themes para o visual do terminal
+```
+
+### Sistema
+
+```shell
+u setup               # setup completo (dependências base)
+u restore             # restaura pacotes e configs (interativo com gum)
+u backup              # salva dotfiles e configs no Wong
+u up [profile]        # docker compose up
+u down                # docker compose down
+u console [profile]   # docker compose up + exec web sh
+u clear               # remove containers, imagens e volumes (pede confirmação)
+```
+
+---
+
+## Ambiente de desenvolvimento — `u dev`
+
+O `u dev` monta o ambiente de trabalho de um projeto com um comando:
+
+```shell
+u dev totalpass           # abre o projeto totalpass
+u dev totalpass staging   # com docker profile "staging"
+u dev .                   # projeto = diretório atual
+```
+
+Quando o Kitty está com `allow_remote_control yes` (default da config incluída), abre as abas na janela atual. Se não, abre uma nova janela do Kitty. Em SSH, usa tmux.
+
+Para um projeto novo, crie `projects/<nome>/functions.sh` com:
+```bash
+<nome>::dev() { ultron::dev <nome> "$@"; }
 ```
 
 ---
@@ -149,7 +144,7 @@ APT_PACKAGES=(
 )
 ```
 
-**Pacote com lógica especial** (repo externo, script customizado, etc.): crie um arquivo em `packages/`:
+**Pacote com lógica especial** (repo externo, script customizado, etc.): crie `packages/nome.sh`:
 
 ```bash
 #!/bin/bash
@@ -159,9 +154,58 @@ PACKAGE_KIND=pkg              # pkg | file | directory
 REQUIRED_PACKAGES=(dep1 dep2) # dependências (opcional)
 
 install() {
-  # lógica de instalação
+  _ultron_spin "Instalando nome..." sudo apt install -y nome
 }
 
-remove() { ... }  # opcional
-config() { ... }  # opcional
+config() { ... }  # opcional — chamado por u config <pkg> e no u restore
+```
+
+Use `_ultron_spin "título..." comando args` para operações longas. Ele exibe um spinner e pre-autentica o sudo automaticamente quando necessário.
+
+---
+
+## Chaves SSH em uma máquina nova
+
+A recomendação é **gerar uma chave nova por máquina** e registrá-la no GitHub.
+
+### 1. Gerar as chaves
+
+```shell
+ssh-keygen -t ed25519 -C "seu@email.com" -f ~/.ssh/id_ed25519_personal
+ssh-keygen -t ed25519 -C "voce@empresa.com" -f ~/.ssh/id_ed25519_work
+```
+
+### 2. Configurar `~/.ssh/config`
+
+```
+Host github-personal
+  HostName github.com
+  User git
+  IdentityFile ~/.ssh/id_ed25519_personal
+  IdentitiesOnly yes
+  AddKeysToAgent yes
+
+Host github-work
+  HostName github.com
+  User git
+  IdentityFile ~/.ssh/id_ed25519_work
+  IdentitiesOnly yes
+  AddKeysToAgent yes
+```
+
+### 3. Registrar no GitHub e testar
+
+```shell
+cat ~/.ssh/id_ed25519_personal.pub  # GitHub pessoal → Settings → SSH keys
+cat ~/.ssh/id_ed25519_work.pub      # GitHub de trabalho → Settings → SSH keys
+
+ssh -T git@github-personal  # Hi Kvothe62!
+ssh -T git@github-work      # Hi <usuario_trabalho>!
+```
+
+### 4. Clonar repos com o alias correto
+
+```shell
+git clone git@github-personal:Kvothe62/ultron.git
+git clone git@github-personal:Kvothe62/wong.git
 ```

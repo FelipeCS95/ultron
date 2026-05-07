@@ -7,7 +7,8 @@ install() {
     | sudo tee /etc/apt/trusted.gpg.d/awsvpnclient_public_key.asc > /dev/null
   echo "deb [arch=amd64] https://d20adtppz83p9s.cloudfront.net/GTK/latest/debian-repo ubuntu main" \
     | sudo tee /etc/apt/sources.list.d/aws-vpn-client.list
-  sudo apt-get update && sudo apt-get install -y awsvpnclient
+  _ultron_spin "Atualizando repositórios..." sudo apt-get update || true
+  _ultron_spin "Instalando awsvpnclient..." sudo apt-get install -y awsvpnclient
 }
 
 remove() {

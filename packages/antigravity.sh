@@ -13,7 +13,8 @@ install() {
     | sudo gpg --dearmor --yes -o /etc/apt/keyrings/antigravity-repo-key.gpg
   echo "deb [signed-by=/etc/apt/keyrings/antigravity-repo-key.gpg] https://us-central1-apt.pkg.dev/projects/antigravity-auto-updater-dev/ antigravity-debian main" \
     | sudo tee /etc/apt/sources.list.d/antigravity.list > /dev/null
-  sudo apt update && sudo apt install -y antigravity
+  _ultron_spin "Atualizando repositórios..." sudo apt-get update || true
+  _ultron_spin "Instalando antigravity..." sudo apt install -y antigravity
 }
 
 remove() {

@@ -8,7 +8,8 @@ install() {
     --fail https://www.postgresql.org/media/keys/ACCC4CF8.asc
   echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" \
     | sudo tee /etc/apt/sources.list.d/pgdg.list
-  sudo apt-get update && sudo apt-get install -y postgresql
+  _ultron_spin "Atualizando repositórios..." sudo apt-get update || true
+  _ultron_spin "Instalando postgresql..." sudo apt-get install -y postgresql
 }
 
 remove() {

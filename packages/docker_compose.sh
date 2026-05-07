@@ -4,7 +4,7 @@ PACKAGE_INFO=(docker-compose-plugin)  # pkg_name seria "docker_compose"
 REQUIRED_PACKAGES=(docker)
 
 install() {
-  sudo apt-get install -y docker-compose-plugin
+  _ultron_spin "Instalando Docker Compose..." sudo apt-get install -y docker-compose-plugin
 }
 
 remove() {

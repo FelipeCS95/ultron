@@ -33,14 +33,31 @@ ultron::theme() {
   local target="${1:-}"
 
   if [[ -z "$target" ]]; then
-    echo "Uso: u theme <alvo>"
-    echo ""
-    echo "Presets do starship ($(_ultron_current_starship_preset)):"
-    starship preset --list 2>/dev/null | sed 's/^/  /' || echo "  (starship não encontrado)"
-    echo ""
-    echo "Tema visual do Kitty ($(_ultron_current_kitty_theme)):"
-    echo "  u theme kitty"
-    return 0
+    if command -v gum &>/dev/null; then
+      local current_starship current_kitty category
+      current_starship=$(_ultron_current_starship_preset)
+      current_kitty=$(_ultron_current_kitty_theme)
+
+      category=$(printf 'starship\nkitty' | gum choose \
+        --header "Starship: $current_starship  ·  Kitty: $current_kitty") || return 0
+
+      if [[ "$category" == "kitty" ]]; then
+        kitten themes
+        return
+      fi
+
+      target=$(starship preset --list 2>/dev/null | gum choose \
+        --header "Preset atual: $current_starship" --height 15) || return 0
+    else
+      echo "Uso: u theme <alvo>"
+      echo ""
+      echo "Presets do starship ($(_ultron_current_starship_preset)):"
+      starship preset --list 2>/dev/null | sed 's/^/  /' || echo "  (starship não encontrado)"
+      echo ""
+      echo "Tema visual do Kitty ($(_ultron_current_kitty_theme)):"
+      echo "  u theme kitty"
+      return 0
+    fi
   fi
 
   if [[ "$target" == "kitty" ]]; then
@@ -59,7 +76,7 @@ ultron::theme() {
     echo "$preset" | head -1
     echo "# preset: $target"
     echo 'add_newline = false'
-    echo "$preset" | tail -n +2
+    echo "$preset" | tail -n +2 | grep -v '^add_newline'
   } > ~/.config/starship.toml
   echo "Starship: preset '$target' aplicado. Abra um novo terminal para ver."
 }

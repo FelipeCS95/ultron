@@ -11,9 +11,8 @@ install() {
   local tmp
   tmp=$(mktemp -d)
 
-  echo "Baixando ${font} Nerd Font ${version}..."
-  curl -L "$url" -o "$tmp/${font}.zip"
-  unzip -q "$tmp/${font}.zip" -d "$tmp/${font}"
+  _ultron_spin "Baixando ${font} Nerd Font ${version}..." curl -L "$url" -o "$tmp/${font}.zip"
+  _ultron_spin "Extraindo fontes..." unzip -q "$tmp/${font}.zip" -d "$tmp/${font}"
 
   mkdir -p ~/.local/share/fonts/NerdFonts
   find "$tmp/${font}" -name "*.ttf" -exec cp {} ~/.local/share/fonts/NerdFonts/ \;

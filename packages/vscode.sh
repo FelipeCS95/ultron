@@ -8,5 +8,6 @@ install() {
     | sudo gpg --dearmor -o /usr/share/keyrings/packages.microsoft.gpg
   echo "deb [arch=amd64,arm64,armhf signed-by=/usr/share/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" \
     | sudo tee /etc/apt/sources.list.d/vscode.list
-  sudo apt update && sudo apt install -y code
+  _ultron_spin "Atualizando repositórios..." sudo apt-get update || true
+  _ultron_spin "Instalando code..." sudo apt install -y code
 }

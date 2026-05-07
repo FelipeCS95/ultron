@@ -6,7 +6,8 @@ PACKAGE_KIND=directory
 REQUIRED_PACKAGES=(oh_my_zsh)
 
 install() {
-  git clone https://github.com/zsh-users/zsh-syntax-highlighting \
+  _ultron_spin "Clonando zsh-syntax-highlighting..." \
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting \
     "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting"
 }
 

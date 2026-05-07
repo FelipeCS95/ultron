@@ -13,7 +13,8 @@ install() {
   local tag
   tag=$(curl -fsSL "https://api.github.com/repos/asdf-vm/asdf/releases/latest" \
     | grep '"tag_name"' | cut -d'"' -f4)
-  curl -fsSL "https://github.com/asdf-vm/asdf/releases/download/${tag}/asdf-${tag}-linux-amd64.tar.gz" \
-    | sudo tar -xz -C /usr/local/bin asdf
+  _ultron_spin "Baixando asdf ${tag}..." \
+    bash -c "curl -fsSL 'https://github.com/asdf-vm/asdf/releases/download/${tag}/asdf-${tag}-linux-amd64.tar.gz' \
+      | sudo tar -xz -C /usr/local/bin asdf"
   sudo chmod +x /usr/local/bin/asdf
 }

@@ -28,9 +28,36 @@ ultron::_snap_name_for() {
   return 1
 }
 
+_ultron_spin() {
+  local title="$1"; shift
+  if command -v gum &>/dev/null; then
+    # Pre-autentica sudo antes do spinner suprimir o prompt de senha
+    [[ "$1" == "sudo" ]] && sudo true
+    gum spin --spinner dot --title "$title" -- "$@"
+  else
+    "$@"
+  fi
+}
+
+_ultron_list_packages() {
+  ls "$ULTRON_PATH/packages/"*.sh 2>/dev/null | xargs -n1 basename | sed 's/\.sh//'
+
+  local entry
+  source "$ULTRON_PATH/config/apt.sh"
+  for entry in "${APT_PACKAGES[@]}"; do echo "${entry%%:*}"; done
+
+  source "$ULTRON_PATH/config/snap.sh"
+  for entry in "${SNAP_PACKAGES[@]}"; do echo "${entry%%:*}"; done
+}
+
 ultron::install() {
   local pkg="$1"
-  [[ -z "$pkg" ]] && return 1
+
+  if [[ -z "$pkg" ]]; then
+    command -v gum &>/dev/null || return 1
+    pkg=$(_ultron_list_packages | sort -u \
+      | gum filter --placeholder "buscar pacote..." --height 20) || return 0
+  fi
 
   local pkg_name
   pkg_name=$(_pkg_normalize "$pkg")
@@ -59,9 +86,11 @@ ultron::install() {
   local apt_name
   if apt_name=$(ultron::_apt_name_for "$pkg_name"); then
     ultron::print_title "INSTALL $(ultron::uppercase "$pkg")"
-    ultron::check_installed "$apt_name" \
-      && echo "$pkg já instalado" \
-      || sudo apt-get install -y "$apt_name"  # alternativa ao if/then/else; ok pois echo raramente falha
+    if ultron::check_installed "$apt_name"; then
+      echo "$pkg já instalado"
+    else
+      _ultron_spin "Instalando $pkg..." sudo apt-get install -y "$apt_name"
+    fi
     return
   fi
 
@@ -69,7 +98,7 @@ ultron::install() {
   local snap_name
   if snap_name=$(ultron::_snap_name_for "$pkg_name"); then
     ultron::print_title "INSTALL $(ultron::uppercase "$pkg")"
-    sudo snap install "$snap_name"
+    _ultron_spin "Instalando $pkg..." sudo snap install "$snap_name"
     return
   fi
 

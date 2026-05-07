@@ -3,6 +3,6 @@
 PACKAGE_INFO=(zsh)
 
 install() {
-  sudo apt-get install -y zsh
+  _ultron_spin "Instalando zsh..." sudo apt-get install -y zsh
   sudo chsh -s "$(which zsh)" "$USER"
 }

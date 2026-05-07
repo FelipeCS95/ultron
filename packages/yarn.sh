@@ -8,7 +8,8 @@ install() {
     | sudo gpg --dearmor -o /usr/share/keyrings/yarnpkg.gpg
   echo "deb [signed-by=/usr/share/keyrings/yarnpkg.gpg] https://dl.yarnpkg.com/debian/ stable main" \
     | sudo tee /etc/apt/sources.list.d/yarn.list
-  sudo apt-get update && sudo apt-get install -y yarn
+  _ultron_spin "Atualizando repositórios..." sudo apt-get update || true
+  _ultron_spin "Instalando yarn..." sudo apt-get install -y yarn
 }
 
 remove() {

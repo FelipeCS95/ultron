@@ -9,6 +9,6 @@ install() {
     | sudo gpg --dearmor -o /etc/apt/keyrings/charm.gpg
   echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" \
     | sudo tee /etc/apt/sources.list.d/charm.list
-  sudo apt update || true
-  sudo apt install -y gum
+  _ultron_spin "Atualizando repositórios..." sudo apt update || true
+  _ultron_spin "Instalando gum..." sudo apt install -y gum
 }

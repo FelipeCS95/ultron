@@ -4,7 +4,7 @@ PACKAGE_INFO=(/snap/bin/slack)
 PACKAGE_KIND=file
 
 install() {
-  sudo snap install slack
+  _ultron_spin "Instalando Slack..." sudo snap install slack
 }
 
 config() {

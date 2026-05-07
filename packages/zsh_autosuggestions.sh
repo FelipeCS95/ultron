@@ -5,7 +5,8 @@ PACKAGE_KIND=directory
 REQUIRED_PACKAGES=(oh_my_zsh)
 
 install() {
-  git clone https://github.com/zsh-users/zsh-autosuggestions \
+  _ultron_spin "Clonando zsh-autosuggestions..." \
+    git clone https://github.com/zsh-users/zsh-autosuggestions \
     "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions"
 }
 

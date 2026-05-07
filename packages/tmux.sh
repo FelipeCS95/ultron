@@ -3,7 +3,7 @@
 PACKAGE_INFO=(tmux)
 
 install() {
-  sudo apt install -y tmux
+  _ultron_spin "Instalando tmux..." sudo apt install -y tmux
 }
 
 config() {

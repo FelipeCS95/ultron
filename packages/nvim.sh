@@ -5,12 +5,13 @@ REQUIRED_PACKAGES=(lazygit nerd_fonts)
 
 install() {
   sudo add-apt-repository ppa:neovim-ppa/unstable -y
-  sudo apt update || true
-  sudo apt install -y neovim
+  _ultron_spin "Atualizando repositórios..." sudo apt update || true
+  _ultron_spin "Instalando neovim..." sudo apt install -y neovim
 
   # LazyVIM starter — só instala se não houver config própria
   if [[ ! -d ~/.config/nvim ]]; then
-    git clone https://github.com/LazyVim/starter ~/.config/nvim
+    _ultron_spin "Clonando LazyVIM starter..." \
+      git clone https://github.com/LazyVim/starter ~/.config/nvim
     rm -rf ~/.config/nvim/.git
     echo "LazyVIM instalado. Abra 'nvim' para baixar os plugins."
   else

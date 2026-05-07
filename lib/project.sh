@@ -82,8 +82,12 @@ ultron::console() {
 }
 
 ultron::clear() {
-  read -rp "Isso vai remover todos os containers, imagens e volumes Docker. Confirmar? [y/N] " confirm
-  [[ "${confirm,,}" != "y" ]] && return 0
+  if command -v gum &>/dev/null; then
+    gum confirm "Remover todos os containers, imagens e volumes Docker?" || return 0
+  else
+    read -rp "Isso vai remover todos os containers, imagens e volumes Docker. Confirmar? [y/N] " confirm
+    [[ "${confirm,,}" != "y" ]] && return 0
+  fi
 
   ultron::down
   docker system prune -a -f

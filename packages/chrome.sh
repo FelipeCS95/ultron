@@ -7,7 +7,8 @@ install() {
     | sudo gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg
   echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] https://dl.google.com/linux/chrome/deb/ stable main" \
     | sudo tee /etc/apt/sources.list.d/google-chrome.list
-  sudo apt-get update && sudo apt install -y google-chrome-stable
+  _ultron_spin "Atualizando repositórios..." sudo apt-get update || true
+  _ultron_spin "Instalando google-chrome-stable..." sudo apt install -y google-chrome-stable
   xdg-settings set default-web-browser google-chrome.desktop 2>/dev/null || true
 }
 

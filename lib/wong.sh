@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Inteligência de backup e restore pessoal via Wong.
-# Wong (https://github.com/FelipeCS95/wong) armazena apenas dados:
+# Wong (https://github.com/Kvothe62/wong) armazena apenas dados:
 # dotfiles, configs de editor, chaves públicas, notas.
 
 _wong_backup_editor() {
@@ -111,7 +111,7 @@ _wong_clone() {
       read -rp "Email para a chave: " email
       ssh-keygen -t ed25519 -C "$email" -f ~/.ssh/id_ed25519_personal
       echo ""
-      echo "Adicione esta chave no GitHub (conta FelipeCS95 > Settings > SSH keys):"
+      echo "Adicione esta chave no GitHub (conta Kvothe62 > Settings > SSH keys):"
       cat ~/.ssh/id_ed25519_personal.pub
       echo ""
       read -rp "Pressione Enter após registrar a chave no GitHub..."
@@ -127,7 +127,7 @@ _wong_clone() {
   # quando o config do Wong ainda não foi restaurado.
   git clone "$WONG_REPO" "$wong" 2>/dev/null \
     || GIT_SSH_COMMAND="ssh -i ~/.ssh/id_ed25519_personal -o StrictHostKeyChecking=accept-new" \
-       git clone "git@github.com:FelipeCS95/wong.git" "$wong" \
+       git clone "git@github.com:Kvothe62/wong.git" "$wong" \
     || { echo "Falha ao clonar. Tente manualmente: git clone $WONG_REPO" >&2; return 1; }
 }
 

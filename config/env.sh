@@ -6,4 +6,4 @@ else
   PROJECT_SYSTEM_PATH=""
 fi
 GID=$(id -g)
-WONG_REPO="git@github-personal:FelipeCS95/wong.git"
+WONG_REPO="git@github-personal:Kvothe62/wong.git"

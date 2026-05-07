@@ -4,7 +4,7 @@
 
 Automação de sistema e gerenciamento de pacotes para Ubuntu/WSL.
 
-Configs pessoais e segredos são gerenciados pelo [Wong](https://github.com/FelipeCS95/wong) (repo privado separado).
+Configs pessoais e segredos são gerenciados pelo [Wong](https://github.com/Kvothe62/wong) (repo privado separado).
 
 ## Instalação em uma máquina nova
 
@@ -18,7 +18,7 @@ sudo apt update && sudo apt install -y git
 
 ```shell
 mkdir -p ~/Documents/Projects
-git clone https://github.com/FelipeCS95/ultron.git ~/Documents/Projects/ultron
+git clone https://github.com/Kvothe62/ultron.git ~/Documents/Projects/ultron
 ```
 
 ### 2. Escolher o que instalar
@@ -55,7 +55,7 @@ Com um caminho de projetos customizado:
 
 ```shell
 PROJECTS_PATH=~/meu/caminho bash -c \
-  'git clone https://github.com/FelipeCS95/ultron.git $PROJECTS_PATH/ultron && $PROJECTS_PATH/ultron/install.sh'
+  'git clone https://github.com/Kvothe62/ultron.git $PROJECTS_PATH/ultron && $PROJECTS_PATH/ultron/install.sh'
 ```
 
 ## Uso
@@ -129,9 +129,9 @@ ssh -T git@github.com       # deve mostrar: Hi <usuario_trabalho>!
 ### 5. Clonar repos pessoais com o alias
 
 ```shell
-# Ao invés de git@github.com:FelipeCS95/...
-git clone git@github-personal:FelipeCS95/ultron.git
-git clone git@github-personal:FelipeCS95/wong.git
+# Ao invés de git@github.com:Kvothe62/...
+git clone git@github-personal:Kvothe62/ultron.git
+git clone git@github-personal:Kvothe62/wong.git
 ```
 
 ---

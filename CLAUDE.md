@@ -5,7 +5,7 @@
 **Ultron** (público) é um framework bash para automatizar setup e gerenciamento de pacotes no Ubuntu/WSL.
 **Wong** (privado, `~/Documents/Projects/wong`) é o repositório de dados pessoais do dono: dotfiles, configs de editor, chaves públicas, notas. **Wong não tem scripts** — toda inteligência fica no Ultron.
 
-Os dois repos pertencem à conta GitHub pessoal `FelipeCS95`, acessada via alias SSH `github-personal`.
+Os dois repos pertencem à conta GitHub pessoal `Kvothe62`, acessada via alias SSH `github-personal`.
 
 ---
 
@@ -108,7 +108,7 @@ O instalador verifica se já está instalado antes de rodar via `_pkg_is_install
 ## Fluxo de máquina nova
 
 ```
-1. git clone https://github.com/FelipeCS95/ultron.git ~/Documents/Projects/ultron
+1. git clone https://github.com/Kvothe62/ultron.git ~/Documents/Projects/ultron
 2. nano ~/Documents/Projects/ultron/config/restore.sh   # escolher pacotes
 3. ~/Documents/Projects/ultron/install.sh
 4. logout + login
@@ -127,4 +127,4 @@ URL do repo configurada em `config/env.sh` → `WONG_REPO`.
 `github.com` → chave TotalPass (`~/.ssh/id_ed25519`)
 `github-personal` → chave pessoal (`~/.ssh/id_ed25519_personal`)
 Ambas com `IdentitiesOnly yes` em `~/.ssh/config`.
-Repos pessoais usam `git@github-personal:FelipeCS95/...`
+Repos pessoais usam `git@github-personal:Kvothe62/...`

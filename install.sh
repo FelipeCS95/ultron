@@ -19,7 +19,7 @@ if [[ -d "$ULTRON_PATH/.git" ]]; then
 else
   echo "Clonando ultron..."
   mkdir -p "$PROJECTS_PATH"
-  git clone https://github.com/FelipeCS95/ultron.git "$ULTRON_PATH"
+  git clone https://github.com/Kvothe62/ultron.git "$ULTRON_PATH"
 fi
 
 echo ""

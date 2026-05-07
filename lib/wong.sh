@@ -96,6 +96,13 @@ ultron::backup() {
     cp ~/.config/terminator/config "$wong/configs/terminator/"
   fi
 
+  # Projects (sobrescritas de projeto — gitignored no Ultron)
+  if [[ -d "$ULTRON_PATH/projects" ]]; then
+    echo "  projects..."
+    mkdir -p "$wong/ultron/projects"
+    cp -r "$ULTRON_PATH/projects/." "$wong/ultron/projects/"
+  fi
+
   echo "=== Backup concluído ==="
 }
 
@@ -202,5 +209,12 @@ ultron::restore_personal() {
     mkdir -p ~/.config/terminator
     cp "$wong/configs/terminator/config" ~/.config/terminator/
     echo "  terminator"
+  fi
+
+  # Projects (sobrescritas de projeto — gitignored no Ultron)
+  if [[ -d "$wong/ultron/projects" ]]; then
+    mkdir -p "$ULTRON_PATH/projects"
+    cp -r "$wong/ultron/projects/." "$ULTRON_PATH/projects/"
+    echo "  projects/"
   fi
 }

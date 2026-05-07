@@ -117,17 +117,19 @@ u clear               # remove containers, imagens e volumes (pede confirmação
 O `u dev` monta o ambiente de trabalho de um projeto com um comando:
 
 ```shell
-u dev totalpass           # abre o projeto totalpass
-u dev totalpass staging   # com docker profile "staging"
+u dev <projeto>           # abre o projeto especificado
+u dev <projeto> staging   # com docker profile "staging"
 u dev .                   # projeto = diretório atual
 ```
 
 Quando o Kitty está com `allow_remote_control yes` (default da config incluída), abre as abas na janela atual. Se não, abre uma nova janela do Kitty. Em SSH, usa tmux.
 
-Para um projeto novo, crie `projects/<nome>/functions.sh` com:
+Para um projeto novo, crie `projects/<projeto>/functions.sh` com:
 ```bash
-<nome>::dev() { ultron::dev <nome> "$@"; }
+<projeto>::dev() { ultron::dev <projeto> "$@"; }
 ```
+
+O diretório `projects/` fica no `.gitignore` — é pessoal e fica no Wong.
 
 ---
 

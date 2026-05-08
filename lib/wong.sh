@@ -76,11 +76,17 @@ ultron::backup() {
     cp -r ~/.config/kitty/. "$wong/configs/kitty/"
   fi
 
-  # Starship
-  if ultron::check_file ~/.config/starship.toml; then
+  # Starship (config ativo + backups de presets customizados)
+  local starship_found=false
+  for f in ~/.config/starship.toml ~/.config/starship-*.bak; do
+    [[ -f "$f" ]] && starship_found=true && break
+  done
+  if $starship_found; then
     echo "  starship..."
     mkdir -p "$wong/configs/starship"
-    cp ~/.config/starship.toml "$wong/configs/starship/"
+    for f in ~/.config/starship.toml ~/.config/starship-*.bak; do
+      [[ -f "$f" ]] && cp "$f" "$wong/configs/starship/"
+    done
   fi
 
   # tmux
@@ -102,6 +108,25 @@ ultron::backup() {
     mkdir -p "$wong/ultron/projects"
     cp -r "$ULTRON_PATH/projects/." "$wong/ultron/projects/"
   fi
+
+  # Commit e push versionado
+  echo "Versionando..."
+  (
+    cd "$wong" || exit 1
+    git add -A
+
+    if git diff --cached --quiet; then
+      echo "  Nenhuma alteração desde o último backup."
+      exit 0
+    fi
+
+    local timestamp changes
+    timestamp=$(date '+%Y-%m-%d %H:%M')
+    changes=$(git diff --cached --name-only | sed 's/^/  /')
+
+    git commit -m "$(printf 'backup: %s\n\n%s' "$timestamp" "$changes")"
+    git push && echo "  Push concluído." || echo "  Push falhou — backup local salvo." >&2
+  )
 
   echo "=== Backup concluído ==="
 }
@@ -191,10 +216,12 @@ ultron::restore_personal() {
     echo "  kitty"
   fi
 
-  # Starship
-  if ultron::check_file "$wong/configs/starship/starship.toml"; then
+  # Starship (config ativo + backups de presets customizados)
+  if [[ -d "$wong/configs/starship" ]]; then
     mkdir -p ~/.config
-    cp "$wong/configs/starship/starship.toml" ~/.config/starship.toml
+    for f in "$wong/configs/starship/starship.toml" "$wong/configs/starship/starship-"*.bak; do
+      [[ -f "$f" ]] && cp "$f" ~/.config/
+    done
     echo "  starship"
   fi
 
